@@ -1,0 +1,7 @@
+streamlit
+Pillow
+google-generativeai
+bcrypt # for password hashing
+requests
+beautifulsoup4
+langchain

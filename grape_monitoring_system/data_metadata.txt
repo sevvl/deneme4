@@ -1,0 +1,4 @@
+last_updated: 2025-08-07T23:18:37.315969
+source_url: https://www.umass.edu/agriculture-food-environment/fruit/ne-small-fruit-management-guide/grapes/diseases/table-54-effectiveness-of-fungicides-on-grape-diseases
+total_rows: 86
+columns: 10
