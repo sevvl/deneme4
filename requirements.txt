@@ -5,3 +5,5 @@ bcrypt # for password hashing
 requests
 beautifulsoup4
 langchain
+duckduckgo-search
+
