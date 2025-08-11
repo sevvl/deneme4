@@ -56,75 +56,74 @@ def education_component(perform_search_func):
                 content = read_education_file(selected)
                 st.markdown(f'### {selected.replace(".md", "").replace("_", " ")}', unsafe_allow_html=True)
                 st.markdown(content, unsafe_allow_html=True)
-    
-  # 🌍 Web Araması
-with tab2:
-    st.subheader("Online Makale Araması")
-    search_query = st.text_input(
-        "Aramak istediğiniz konuyu girin (örn: üzüm mildiyö tedavisi)",
-        key="web_search_input"
-    )
 
-    if st.button("Web'de Ara", key="web_search_button"):
-        if search_query:
-            with st.spinner(f"'{search_query}' için web araması yapılıyor..."):
-                results = perform_search_func(search_query)
+    # 🌍 Web Araması
+    with tab2:
+        st.subheader("Online Makale Araması")
+        search_query = st.text_input(
+            "Aramak istediğiniz konuyu girin (örn: üzüm mildiyö tedavisi)",
+            key="web_search_input"
+        )
 
-                # Debug için sonuçları göster
-                st.write("🔍 Arama Sonuçları Ham Veri:", results)
+        if st.button("Web'de Ara", key="web_search_button"):
+            if search_query:
+                with st.spinner(f"'{search_query}' için web araması yapılıyor..."):
+                    results = perform_search_func(search_query)
 
-                if results:
-                    st.subheader("Arama Sonuçları:")
-                    for result in results:
-                        title = result.get('title', 'Başlık Yok')
-                        link = result.get('link') or result.get('url') or '#'
-                        snippet = result.get('snippet', '')
+                    # Debug için sonuçları göster
+                    st.write("🔍 Arama Sonuçları Ham Veri:", results)
 
-                        st.markdown(f"- **[{title}]({link})**")
-                        st.write(snippet)
-                        st.markdown("--- ")
-                else:
-                    st.info(f"'{search_query}' için sonuç bulunamadı.")
-        else:
-            st.warning("Lütfen bir arama terimi girin.")
+                    if results:
+                        st.subheader("Arama Sonuçları:")
+                        for result in results:
+                            title = result.get('title', 'Başlık Yok')
+                            link = result.get('link') or result.get('url') or '#'
+                            snippet = result.get('snippet', '')
 
-    # --- Ağ erişimi debug butonu (Sadece test için; işi bitince kaldır) ---
-    import requests, socket, os
+                            st.markdown(f"- **[{title}]({link})**")
+                            st.write(snippet)
+                            st.markdown("--- ")
+                    else:
+                        st.info(f"'{search_query}' için sonuç bulunamadı.")
+            else:
+                st.warning("Lütfen bir arama terimi girin.")
 
-    if st.button("Ağ / Erişim Kontrolü (Debug)", key="network_debug"):
-        st.info("Test başlatılıyor... (10s timeout)")
+        # --- Ağ erişimi debug butonu (Sadece test için; işi bitince kaldır) ---
+        import requests, socket
 
-        test_hosts = [
-            "https://fasulyedoktoru.com",
-            "https://httpbin.org/get",
-            "https://www.google.com"
-        ]
+        if st.button("Ağ / Erişim Kontrolü (Debug)", key="network_debug"):
+            st.info("Test başlatılıyor... (10s timeout)")
 
-        results = {}
-        for url in test_hosts:
+            test_hosts = [
+                "https://fasulyedoktoru.com",
+                "https://httpbin.org/get",
+                "https://www.google.com"
+            ]
+
+            results = {}
+            for url in test_hosts:
+                try:
+                    r = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Debug)"}, timeout=10)
+                    results[url] = {
+                        "status_code": r.status_code,
+                        "ok": r.ok,
+                        "content_len": len(r.text)
+                    }
+                except Exception as e:
+                    results[url] = {"error": str(e)}
+
             try:
-                r = requests.get(url, headers={"User-Agent":"Mozilla/5.0 (Debug)"}, timeout=10)
-                results[url] = {
-                    "status_code": r.status_code,
-                    "ok": r.ok,
-                    "content_len": len(r.text)
-                }
+                ip = socket.gethostbyname("fasulyedoktoru.com")
             except Exception as e:
-                results[url] = {"error": str(e)}
+                ip = f"DNS error: {e}"
 
-        try:
-            ip = socket.gethostbyname("fasulyedoktoru.com")
-        except Exception as e:
-            ip = f"DNS error: {e}"
+            st.write("DNS çözümleme (fasulyedoktoru.com):", ip)
+            st.write("🔍 HTTP sonuçları (özet):")
+            st.json(results)
 
-        st.write("DNS çözümleme (fasulyedoktoru.com):", ip)
-        st.write("🔍 HTTP sonuçları (özet):")
-        st.json(results)
-
-        # API KEY gibi önemli değerleri yazdırma — sadece var mı yok mu kontrol et
-        st.write("MY_API_KEY env var set mi?:", bool(os.environ.get("MY_API_KEY")))
-    # --------------------------------------------------------------------****
-
+            # API KEY var mı? (Değer yazdırmıyoruz)
+            st.write("MY_API_KEY env var set mi?:", bool(os.environ.get("MY_API_KEY")))
+        # --------------------------------------------------------------------
 
     # 🧪 Fungisit verileri
     with tab3:
