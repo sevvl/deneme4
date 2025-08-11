@@ -123,7 +123,7 @@ with tab2:
 
         # API KEY gibi önemli değerleri yazdırma — sadece var mı yok mu kontrol et
         st.write("MY_API_KEY env var set mi?:", bool(os.environ.get("MY_API_KEY")))
-    # --------------------------------------------------------------------
+    # --------------------------------------------------------------------****
 
 
     # 🧪 Fungisit verileri
